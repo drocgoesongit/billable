@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "824996828809",
+    "project_id": "billable-155be",
+    "storage_bucket": "billable-155be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824996828809:android:46849517b375aaedee9858",
+        "android_client_info": {
+          "package_name": "com.example.billable"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "824996828809-8srv5vh6krlgrsmti1temqou15iruld1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5gpm_GL1zol2m0jFbbCkMJotGSCUhk3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824996828809-8srv5vh6krlgrsmti1temqou15iruld1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
