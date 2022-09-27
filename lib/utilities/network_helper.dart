@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously, constant_identifier_names
+
 import 'dart:convert';
+import 'package:billable/const.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-const api_key = "rzp_test_KpdQA981o8JxuY";
-const secret_key = "f83yG1oBXrrqGX72I95DhWjJ";
+const String api_key = "rzp_test_uj5csPT8ukw8hI";
+const secret_key = "MtfB8wXUS9ascCUX2elTvFi1";
 
 class NetworkHelper{
   NetworkHelper({required this.context});
@@ -28,13 +31,11 @@ class NetworkHelper{
     ScaffoldMessenger.of(context).showSnackBar(
                    SnackBar(
                     content: Text(basicAuth),
-                    duration: Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 400),
               ));
     http.Response response = await http.post(Uri.parse(url), headers: {'authorization': basicAuth, 'Content-type': "application/json",}, body:jsonBody);
     var body = response.body;
     var data = jsonDecode(body);
-
-
 
     if(response.statusCode == 200){
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,7 +47,7 @@ class NetworkHelper{
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(response.body.toString()),
-            duration: Duration(milliseconds: 10000),
+            duration: const Duration(milliseconds: 10000),
           ));
     }
 
@@ -60,12 +61,107 @@ class NetworkHelper{
     //             ));
     // }
 
-
-
     if(data != null){
       return data['id'];
     }else{
       return "r";
     }
+  }
+
+  Future<String> sendWelcomeNotifications(String email, String name) async {
+    Uri url = Uri.parse("https://api.courier.com/send");
+    final jsonData =
+      {
+        "message": {
+          "to": {
+            "email": email
+          },
+          "template": kWelcomeTemplate,
+          "data": {
+            "name": name
+          },
+          "routing": {
+            "method": "single",
+            "channels": [
+              "email"
+            ]
+          }
+        }
+      };
+    final jsonBody = json.encode(jsonData);
+    const authorization = "Bearer $kCourierApiKey";
+
+    http.Response response = await http.post(url, headers: {'authorization': authorization, 'Content-type': "application/json",}, body:jsonBody);
+
+    var body = response.body;
+    var data = jsonDecode(body);
+
+    if(response.statusCode == 200){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("positive output"),
+            duration: Duration(milliseconds: 1000),
+          ));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.body.toString()),
+            duration: const Duration(milliseconds: 10000),
+          ));
+    }
+    if(data != null){
+      return "s";
+    }else{
+      return "r";
+    }
+
+  }
+  Future<String> sendThankingNotification(String email, String name) async {
+    Uri url = Uri.parse("https://api.courier.com/send");
+    final jsonData =
+    {
+      "message": {
+        "to": {
+          "email": email
+        },
+        "template": kThanksTemplate,
+        "data": {
+          "name": name
+        },
+        "routing": {
+          "method": "single",
+          "channels": [
+            "email"
+          ]
+        }
+      }
+    };
+    final jsonBody = json.encode(jsonData);
+    const authorization = "Bearer $kCourierApiKey";
+
+    http.Response response = await http.post(url, headers: {'authorization': authorization, 'Content-type': "application/json",}, body:jsonBody);
+
+    var body = response.body;
+    var data = jsonDecode(body);
+
+    if(response.statusCode == 200){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("positive output"),
+            duration: Duration(milliseconds: 1000),
+          ));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.body.toString()),
+            duration: const Duration(milliseconds: 10000),
+          ));
+    }
+    if(data != null){
+      return "s";
+    }else{
+      return "r";
+    }
+
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:billable/const.dart';
 import 'package:billable/models/products.dart';
 import 'package:billable/screens/home.dart';
@@ -9,12 +11,12 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 
 class Payment extends StatefulWidget {
-  Payment({required this.amount, required this.productList, required this.name, required this.number});
+  Payment({required this.amount, required this.productList, required this.name, required this.number, required this.mail});
   String amount;
   List<Product> productList;
   String name;
   String number;
-
+  String mail;
   @override
   State<Payment> createState() => _PaymentState();
 }
@@ -56,7 +58,7 @@ class _PaymentState extends State<Payment> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(top: 8.0, left: 16.0),
+              padding: const EdgeInsets.only(top: 16.0, left: 16.0),
               width: double.infinity,
               alignment: Alignment.topLeft,
               child: const Text(
@@ -67,26 +69,28 @@ class _PaymentState extends State<Payment> {
             const SizedBox(
               height: 20.0,
             ),
+
+            Expanded(child: Container(
+              child: Image.asset("assets/images/payment.png"),
+            )),
             ListTile(
               leading: const Icon(
                 Icons.monetization_on,
                 color: kDarkBlue,
               ),
               title: Text("₹ ${widget.amount}",
-              style: kMediumTextDark,),
+                style: kMediumTextDark,),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child:   const Text(
+            const Padding(
+              padding:  EdgeInsets.all(8.0),
+              child:  Text(
                 "Pay with razorpay with Card, UPI, or NetBanking",
                 style: kSmallTextDark,
               ),
             ),
-
-            Expanded(child: Container(
-              child: Image.asset("images/assets/payment.png"),
-            )),
-
+            const SizedBox(
+              height: 30.0,
+            ),
 
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -100,15 +104,10 @@ class _PaymentState extends State<Payment> {
                       borderRadius: BorderRadius.circular(10.0),
                       side: BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
                     ),
-                    onPressed: () async {
-                      String here = await NetworkHelper(context: context).getData(int.parse(widget.amount), getRandom().toString());
-                        ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                        content: Text(here),
-                        duration: const Duration(milliseconds: 400),
-                        ));
+                    onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(check: false)));
                       },
-                    child: const Text("Create Order"),
+                    child: const Text("Cancel"),
                   ),
                   MaterialButton(
                     height: 65,
@@ -120,7 +119,7 @@ class _PaymentState extends State<Payment> {
                     ),
                     onPressed: () async {
                       var options = {
-                        'key': 'rzp_test_KpdQA981o8JxuY',
+                        'key': 'rzp_test_uj5csPT8ukw8hI',
                         'amount': int.parse(widget.amount)*100, //in the smallest currency sub-unit.
                         'name': 'Billable',
                         'retry' : {
@@ -132,6 +131,7 @@ class _PaymentState extends State<Payment> {
                         'description': 'Complete order',
                         'timeout': 60, // in seconds
                       };
+
                       _razorpay.open(options);
                     },
                     child: const Text("Pay"),
@@ -175,7 +175,8 @@ class _PaymentState extends State<Payment> {
     );
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+  String result = await NetworkHelper(context: context).sendThankingNotification(widget.name, widget.mail);
 
     ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -185,7 +186,7 @@ class _PaymentState extends State<Payment> {
 
     CollectionReference _ref = FirebaseFirestore.instance.collection("Orders");
     var productMap = widget.productList.map((e){
-      return{
+      return {
         "name": e.name,
         "price": e.price.toString(),
       };

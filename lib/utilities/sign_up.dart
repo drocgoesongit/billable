@@ -1,4 +1,5 @@
 import 'package:billable/screens/add_products.dart';
+import 'package:billable/utilities/network_helper.dart';
 import 'package:billable/utilities/snackbar.dart';
 import 'package:billable/utilities/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,14 +19,10 @@ class _SignUpState extends State<SignUp> {
   final FocusNode focusNodeEmail = FocusNode();
   final FocusNode focusNodeName = FocusNode();
 
-  bool _obscureTextPassword = true;
-  bool _obscureTextConfirmPassword = true;
-
   TextEditingController signupEmailController = TextEditingController();
   TextEditingController signupNameController = TextEditingController();
   TextEditingController signupPasswordController = TextEditingController();
-  TextEditingController signupConfirmPasswordController =
-  TextEditingController();
+  TextEditingController signupConfirmPasswordController = TextEditingController();
 
   final CollectionReference _reference = FirebaseFirestore.instance.collection("Users");
 
@@ -233,13 +230,29 @@ class _SignUpState extends State<SignUp> {
                       'last' : signupNameController.text,
                       'phone' : signupPasswordController.text,
                       'email' : signupConfirmPasswordController.text,
-                    }).then((value) => Navigator.push(
+                    }).then((value) async {
+                      String response = await NetworkHelper(context: context).sendWelcomeNotifications(signupConfirmPasswordController.text, signupEmailController.text);
+                      if(response == "r"){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Cant send notification."),
+                                        duration: Duration(milliseconds: 400),
+                                  ));
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Welcome notification send successfully."),
+                                        duration: Duration(milliseconds: 400),
+                                  ));
+                      }
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddProducts(number: signupPasswordController.text))
-                    )).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+                        MaterialPageRoute(builder: (context) => AddProducts(number: signupPasswordController.text)));
+
+                    }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
                                               content: Text("got this ${error.toString()}"),
-                                              duration: const Duration(milliseconds: 400),
+                                              duration: const Duration(milliseconds: 3000),
                                         )));
 
                   },
@@ -254,17 +267,5 @@ class _SignUpState extends State<SignUp> {
 
   void _toggleSignUpButton() {
     CustomSnackBar(context, const Text('SignUp button pressed'));
-  }
-
-  void _toggleSignup() {
-    setState(() {
-      _obscureTextPassword = !_obscureTextPassword;
-    });
-  }
-
-  void _toggleSignupConfirm() {
-    setState(() {
-      _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
-    });
   }
 }

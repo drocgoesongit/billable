@@ -20,6 +20,7 @@ class AddProducts extends StatefulWidget {
 class _AddProductsState extends State<AddProducts> {
   String _scanBarcode = 'Unknown';
   String name = '';
+  String email = '';
   List<Widget> listOfItems = [];
   List<String> itemsAdded = [];
   List<Product> products = [];
@@ -88,8 +89,10 @@ class _AddProductsState extends State<AddProducts> {
         await ref.doc(widget.number).get().then((doc) {
           anotherData = doc.data();
           var username = anotherData['first'];
+          var userEmail = anotherData['email'];
           setState(() {
             name = username;
+            email = userEmail;
           });
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -263,7 +266,7 @@ class _AddProductsState extends State<AddProducts> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Payment(amount: total.toString(),productList: products, name: name, number: widget.number,)),
+                        MaterialPageRoute(builder: (context) => Payment(amount: total.toString(),productList: products, name: name, number: widget.number, mail: email)),
                       );
                     },
                     child: const Text("Proceed"),

@@ -108,11 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void checkForAlreadyLoggedIN() async {
     if(await FirebaseAuth.instance.currentUser != null){
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("User already logged in."),
-            duration: Duration(milliseconds: 400),
-          ));
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text("User already logged in."),
+      //       duration: Duration(milliseconds: 400),
+      //     ));
     }else{
       Navigator.push(
         context,
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(e.toString()),
-                      duration: Duration(milliseconds: 4000),
+                      duration: const Duration(milliseconds: 4000),
                 ));
     }
   }

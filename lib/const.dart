@@ -4,6 +4,9 @@ const kOrangeColor = Color(0xFFF66B0E);
 const kLightGray = Color(0xFFEFEFEF);
 const kLightBlue = Color(0xFF205375);
 const kDarkBlue = Color(0xFF112B3C);
+const kCourierApiKey = "pk_prod_P48F7VVT0AMAFWN2KE0WNRG9F008";
+const kWelcomeTemplate = "Q63QN5T3RY49MPG594B6S6VT0HR1";
+const kThanksTemplate = "6HSEKA19MAM27YJYMH4YZW0HAJCN";
 
 const kTitleTextStyleDark = TextStyle(
   color: kDarkBlue,
